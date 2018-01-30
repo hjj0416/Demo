@@ -65,6 +65,7 @@ public class MouseOrbit : MonoBehaviour {
 	//Roate camera method
 	void RotateCamera()
 	{
+    
 		if (Input.GetMouseButtonDown(1)){
  
 			isActivated = true;

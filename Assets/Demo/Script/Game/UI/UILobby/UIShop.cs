@@ -44,9 +44,9 @@ public class UIShop : UIWin
         StringBuilder sb = new StringBuilder();
         sb.AppendFormat("<color=red>{0}</color>\n\n", BagItem.name);
         if (BagItem.type == 0)
-                sb.AppendFormat("回复HP:{0}\n\n回复MP:{1}\n\n", BagItem.hp,BagItem.mp);
+                sb.AppendFormat("回复HP:{0}\n回复MP:{1}\n\n", BagItem.hp,BagItem.mp);
         else if(BagItem.type==1)
-            sb.AppendFormat("攻击力+:{0}\n\n防御+:{1}\n\n", BagItem.atk, BagItem.def);
+            sb.AppendFormat("攻击力+:{0}\n防御+:{1}\n\n", BagItem.atk, BagItem.def);
         sb.AppendFormat("<size=20><color=white>购买价格：{0}\n出售价格：{1}</color></size>\n\n<color=yellow><size=18>描述：{2}</size></color>", BagItem.buyPrice, BagItem.sellPrice, BagItem.description);
         return sb.ToString();
     }

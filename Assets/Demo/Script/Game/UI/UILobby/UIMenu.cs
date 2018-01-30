@@ -16,8 +16,10 @@ public class UIMenu : MonoBehaviour {
 
     void BagOnClick()
     {
-        UIManager.Instance.ShowWindow("UIBag");
-        UIManager.Instance.ShowWindow("UIEquipment");
+        if(GameObject.Find("UIBag")==null)
+            UIManager.Instance.ShowWindow("UIBag");
+        if (GameObject.Find("UIEquipment") == null)
+            UIManager.Instance.ShowWindow("UIEquipment");
     }
 
     void ShopClick()

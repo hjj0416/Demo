@@ -46,7 +46,7 @@ public class UIPlayer : MonoBehaviour {
     void LevelChange(short evt, PlayerData playerData)
     {
         LvText.text = string.Format("LV:{0}", playerData.Level);
-        if (evt>=0)
+        if (evt>=0&&playerData.Level>1)
             UIManager.Instance.ShowTips(string.Format("等级提升至{0}级", playerData.Level));
     }
 

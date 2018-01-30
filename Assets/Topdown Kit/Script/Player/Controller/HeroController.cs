@@ -6,6 +6,8 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public enum ClassType{None,Swordman,Archer,Mage}
 
@@ -14,8 +16,8 @@ public enum ClassType{None,Swordman,Archer,Mage}
 [RequireComponent (typeof (PlayerStatus))]
 [RequireComponent (typeof (PlayerSkill))]
 public class HeroController : MonoBehaviour {
-	
-	public enum ControlAnimationState {Idle,Move,WaitAttack,Attack,Cast,ActiveSkill,TakeAtk,Death}; //Hero state
+
+    public enum ControlAnimationState {Idle,Move,WaitAttack,Attack,Cast,ActiveSkill,TakeAtk,Death}; //Hero state
 	public ClassType classType; //Class hero
     public bool mouseMove = true;//是否使用鼠标移动
 	public GameObject target;     //Target enemy
@@ -23,9 +25,8 @@ public class HeroController : MonoBehaviour {
 	[SerializeField]
 	public List<GameObject> modelMesh;      //Model to chage color if take attack
 	public Color colorTakeDamage;       //Color take damage
-    
-	
-	public ControlAnimationState ctrlAnimState; //Control Animation State
+
+    public ControlAnimationState ctrlAnimState; //Control Animation State
 	
 	public bool autoAttack;
 	
@@ -108,13 +109,13 @@ public class HeroController : MonoBehaviour {
         PlayerDataMgr.SendEvent<HeroController>(PlayerDataEvent.PLAYER_HP_CHANGE, this);
         //PlayerDataMgr.SendEvent<PlayerData>(PlayerDataEvent.LEVEL_CHANGED,PlayerDataMgr.Instance.playerData);
         PlayerDataMgr.Instance.playerData.AddExp(0);
-        SetDefualtColor();	
-	}
+        SetDefualtColor();
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
-		
-		TargetLock();
+        TargetLock();
 		HeroAnimationState();
 		
 		
@@ -472,14 +473,14 @@ public class HeroController : MonoBehaviour {
 		
 		
 		destinationDistance = Vector3.Distance(destinationPosition, this.transform.position);
-		
-		// Moves the Player if the Left Mouse Button was clicked
-		if (Input.GetMouseButtonDown(0) && GUIUtility.hotControl==0 && dontClick == false) {
+
+
+        // 鼠标左键被单击时移动人物
+        if (Input.GetMouseButtonDown(0) && GUIUtility.hotControl==0 && dontClick == false) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hitdist;
-			
-			//if disable auto attack it can attack 1 time
-			if(!autoAttack)
+            //if disable auto attack it can attack 1 time
+            if (!autoAttack)
 			{
 				onceAttack = true;
 			}
@@ -531,17 +532,14 @@ public class HeroController : MonoBehaviour {
 					
 					if(ctrlAnimState != ControlAnimationState.Attack)
 					target = h.collider.gameObject;
-					//Spawn Mouse Effect
-					
-					
+					//Spawn Mouse Effect			
 					
 				}
 			}
 	
-		}
-		
+		}		
  
-		// Moves the player if the mouse button is hold down
+		// 如果鼠标被按住则移动
 		else if (Input.GetMouseButton(0) && GUIUtility.hotControl==0 && dontClick == false) {
  
 			Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -562,17 +560,17 @@ public class HeroController : MonoBehaviour {
 			}
 		}
 		
-		//Reset State when release left-click
+		//松开左键时重置
 		if(Input.GetMouseButtonUp(0))
 		{
 			if(ctrlAnimState != ControlAnimationState.Attack)
 			ctrlAnimState = ControlAnimationState.Idle;
 			moveSpeed = 0;	
 		}
-		
-		
-		//Disable Auto Attack Command
-		if(Input.GetMouseButton(0) && target && dontClick == false)
+
+
+        //禁用自动攻击命令
+        if (Input.GetMouseButton(0) && target && dontClick == false)
 		{
 			//if disable auto attack it can attack 1 time
 			if(!autoAttack)
@@ -764,6 +762,7 @@ public class HeroController : MonoBehaviour {
 		
 		
 	}
+
 	public void OnAlert(AlertResult result)
     {
         if (result == AlertResult.OK)
@@ -877,5 +876,6 @@ public class HeroController : MonoBehaviour {
 		oneShotOpenDeadWindow = false;
         PlayerDataMgr.Instance.dispatcher.SendEvent<HeroController>(PlayerDataEvent.PLAYER_HP_CHANGE, this);
     }
+
 
 }
