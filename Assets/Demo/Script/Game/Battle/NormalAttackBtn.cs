@@ -2,18 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalAttackBtn : MonoBehaviour {
-
-
-
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+public class NormalAttackBtn : MonoBehaviour 
+{
+    public void OnAttack()
+    {
+        UIManager.SendEvent(UIEventType.ON_JOYSTICK_ATTACK);
+    }
 }

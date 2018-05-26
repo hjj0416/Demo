@@ -1,0 +1,64 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+	<LinearLayout
+	    android:layout_height="wrap_content" 
+	    android:layout_width="wrap_content"
+	    android:orientation="vertical"
+	    >
+	    <Button 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="20dp"
+	        android:text="@string/login_button_name"
+	        android:id="@+id/login_button"
+	        />
+	    <Button 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="20dp"
+	        android:text="check login"
+	        android:id="@+id/check_login_button"
+	        />
+	    <Button 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="20dp"
+	        android:text="logout"
+	        android:id="@+id/logout_button"
+	        />
+	    <Button 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="20dp"
+	        android:text="@string/charge_button_namee"
+	        android:id="@+id/charge_button"
+	        />
+	    
+	    <Button 
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="20dp"
+	        android:text="pay 0.1"
+	        android:id="@+id/pay_button"
+	        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/charge_result_text"
+        android:padding="@dimen/padding_medium"
+        android:text="@string/hello_world"
+        tools:context=".MainActivity" />
+    </LinearLayout>
+    
+<!--     <com.mobage.android.cn.dynamicmenubar.DynamicMenuBar
+xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:id="@+id/menubar" visibility="visible" gravity="top|left"/>
+  -->
+
+
+</RelativeLayout>
+
+

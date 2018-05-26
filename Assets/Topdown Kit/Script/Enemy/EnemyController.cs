@@ -51,7 +51,7 @@ public class EnemyController : MonoBehaviour {
 	//Private variable
 	//Get component other script
 	private AnimationManagerEnemy animationManager;
-	private EnemyStatus enemyStatus;
+	public EnemyStatus enemyStatus;
 	private CharacterController controller;
 	
 	private float defaultReturnPhase;  //default return phase
@@ -490,6 +490,7 @@ public class EnemyController : MonoBehaviour {
 						pStatus = target.GetComponent<PlayerStatus>();
 						pStatus.status.exp += enemyStatus.expGive;
                         PlayerDataMgr.Instance.playerData.AddExp(enemyStatus.expGive);
+                        TaskDataMgr.Instance.AddNum(enemyStatus.id,1,true);
 					}       
 					Destroy(this.gameObject,deadTimer);
                 Destroy(this.gameObject.GetComponent<Health>().healthBar.gameObject);

@@ -58,6 +58,7 @@ public class Game : MonoBehaviour
         UIManager.Instance.Init();
 
         Bean.TryLoadConfig("BagItem");
+        Bean.TryLoadConfig("TaskItem");
 
 
         if (cb != null)

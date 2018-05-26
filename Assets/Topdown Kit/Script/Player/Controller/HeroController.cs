@@ -19,7 +19,6 @@ public class HeroController : MonoBehaviour {
 
     public enum ControlAnimationState {Idle,Move,WaitAttack,Attack,Cast,ActiveSkill,TakeAtk,Death}; //Hero state
 	public ClassType classType; //Class hero
-    public bool mouseMove = true;//是否使用鼠标移动
 	public GameObject target;     //Target enemy
 	public GameObject targetHP;  //Target show hp
 	[SerializeField]
@@ -28,7 +27,6 @@ public class HeroController : MonoBehaviour {
 
     public ControlAnimationState ctrlAnimState; //Control Animation State
 	
-	public bool autoAttack;
 	
 	//Get component other script
 	
@@ -39,14 +37,11 @@ public class HeroController : MonoBehaviour {
 	private float delayAttack = 100;		//Delay Attack speed
 	private Vector3 destinationPosition;		// The destination Point
 	private float destinationDistance;			// The distance between this.transform and destinationPosition
-	private Vector3 movedir;
 	private CharacterController controller;
-	private float moveSpeed;						// The Speed the character will move
 	private Vector3 ctargetPos;					//Convert Target Position
 	private Vector3 targetPos;					//Target Pos
 	private Quaternion targetRotation;			//Rotation]
 	private bool checkCritical;					//Check Critical
-	private bool onceAttack;					//Check Attack if disable AutoAttack
 	private float flinchValue;					//Check Enemy flinch
 	private Color[] defaultColor;				//Default Material Color
 	private bool getSkillTarget;                //Check Get Skill Target
@@ -110,18 +105,24 @@ public class HeroController : MonoBehaviour {
         //PlayerDataMgr.SendEvent<PlayerData>(PlayerDataEvent.LEVEL_CHANGED,PlayerDataMgr.Instance.playerData);
         PlayerDataMgr.Instance.playerData.AddExp(0);
         SetDefualtColor();
-
+        UIManager.AddEventHandler(UIEventType.ON_JOYSTICK_ATTACK, Attack);
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    private void OnDestroy()
+    {
+
+        UIManager.RemoveEventHandler(UIEventType.ON_JOYSTICK_ATTACK, Attack);
+    }
+
+    // Update is called once per frame
+    void Update () {
         TargetLock();
 		HeroAnimationState();
 		
 		
 		if(ctrlAnimState != ControlAnimationState.Death && ctrlAnimState != ControlAnimationState.Cast && ctrlAnimState != ControlAnimationState.ActiveSkill && dontMove == false)
 		{
-			ClickToMove();
+			//ClickToMove();
 			CancelSkill();
 		}else if(dontMove == true){
 			ctrlAnimState = ControlAnimationState.Idle;
@@ -199,12 +200,10 @@ public class HeroController : MonoBehaviour {
 				{
 					animationManager.animationState = animationManager.CriticalAttack;
 					delayAttack = 100;
-					onceAttack = false;
 				}else if(!checkCritical)
 				{
 					animationManager.animationState = animationManager.Attack;
 					delayAttack = 100;
-					onceAttack = false;
 				}
 			}else
 			{
@@ -245,7 +244,8 @@ public class HeroController : MonoBehaviour {
 		if(delayAttack > 0)
 		{
 			delayAttack -= Time.deltaTime * playerStatus.status.atkSpd;	
-		}else if(delayAttack <= 0)
+		}
+        else if(delayAttack <= 0)
 		{
 			checkCritical = CriticalCal(playerStatus.status.criticalRate);
 				
@@ -253,21 +253,11 @@ public class HeroController : MonoBehaviour {
 			{
 				typeAttack = Random.Range(0,animationManager.criticalAttack.Count);
 				animationManager.checkAttack = false;
-			}else if(!checkCritical)
+			}
+            else if(!checkCritical)
 			{
 				typeAttack = Random.Range(0,animationManager.normalAttack.Count);
 				animationManager.checkAttack = false;
-			}
-			
-			if(autoAttack)
-			{
-				ctrlAnimState = ControlAnimationState.Attack;
-			}else
-			{
-				if(onceAttack)
-				{
-					ctrlAnimState = ControlAnimationState.Attack;
-				}
 			}
 				
 		}
@@ -388,13 +378,11 @@ public class HeroController : MonoBehaviour {
 					}
 					
 					LookAtTarget(freePosSkill);
-					moveSpeed = 0;
 				}
 				else if(destinationDistance > skillRange ){			//Reset Speed to default
 					//Change to state move
 					if(ctrlAnimState == ControlAnimationState.Move || ctrlAnimState == ControlAnimationState.Idle)
 					ctrlAnimState = ControlAnimationState.Move;
-					moveSpeed = playerStatus.status.movespd;
 				}
 		}else
 		{
@@ -407,7 +395,6 @@ public class HeroController : MonoBehaviour {
 					//Change to state Idle
 					if(ctrlAnimState == ControlAnimationState.Move || ctrlAnimState == ControlAnimationState.Idle)
 					ctrlAnimState = ControlAnimationState.WaitAttack;
-					moveSpeed = 0;
 					
 					LookAtTarget(target.transform.position);
 				}
@@ -416,7 +403,6 @@ public class HeroController : MonoBehaviour {
 					LookAtTarget(target.transform.position);
 					if(ctrlAnimState == ControlAnimationState.Move || ctrlAnimState == ControlAnimationState.Idle || ctrlAnimState == ControlAnimationState.WaitAttack)
 					ctrlAnimState = ControlAnimationState.Move;
-					moveSpeed = playerStatus.status.movespd;
 				}
 				
 				
@@ -437,36 +423,15 @@ public class HeroController : MonoBehaviour {
 					}
 					
 					LookAtTarget(target.transform.position);
-					moveSpeed = 0;
 				}
 				else if(destinationDistance > skillRange ){			//Reset Speed to default
 					//Change to state move
 					LookAtTarget(target.transform.position);
 					if(ctrlAnimState == ControlAnimationState.Move || ctrlAnimState == ControlAnimationState.Idle || ctrlAnimState == ControlAnimationState.WaitAttack)
 					ctrlAnimState = ControlAnimationState.Move;
-					moveSpeed = playerStatus.status.movespd;
 				}
 				
 				
-			}else
-			
-			if(target == null && mouseMove) // Click Ground
-			{
-				destinationDistance = Vector3.Distance(destinationPosition, this.transform.position); //Check Distance Player to Destination Point
-				
-				if(destinationDistance < .5f){		// Reset speed to 0
-					
-					//Change to state Idle
-					if(ctrlAnimState == ControlAnimationState.Move || ctrlAnimState == ControlAnimationState.Idle)
-					ctrlAnimState = ControlAnimationState.Idle;
-					moveSpeed = 0;
-				}
-				else if(destinationDistance > .5f ){			//Reset Speed to default
-					//Change to state move
-					if(ctrlAnimState == ControlAnimationState.Move || ctrlAnimState == ControlAnimationState.Idle)
-					ctrlAnimState = ControlAnimationState.Move;
-					moveSpeed = playerStatus.status.movespd;
-				}
 			}
 		}
 		
@@ -479,12 +444,6 @@ public class HeroController : MonoBehaviour {
         if (Input.GetMouseButtonDown(0) && GUIUtility.hotControl==0 && dontClick == false) {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 			RaycastHit hitdist;
-            //if disable auto attack it can attack 1 time
-            if (!autoAttack)
-			{
-				onceAttack = true;
-			}
-			
  
 			if(Physics.Raycast(ray, out hitdist,100, 1 << layerActiveEnemy | 1 << layerActiveGround | 1 << layerActiveItem)) {
 
@@ -559,44 +518,6 @@ public class HeroController : MonoBehaviour {
 				
 			}
 		}
-		
-		//松开左键时重置
-		if(Input.GetMouseButtonUp(0))
-		{
-			if(ctrlAnimState != ControlAnimationState.Attack)
-			ctrlAnimState = ControlAnimationState.Idle;
-			moveSpeed = 0;	
-		}
-
-
-        //禁用自动攻击命令
-        if (Input.GetMouseButton(0) && target && dontClick == false)
-		{
-			//if disable auto attack it can attack 1 time
-			if(!autoAttack)
-			{
-				onceAttack = true;
-			}
-		}
-		
-		
-		
-		if(ctrlAnimState == ControlAnimationState.Move){
-			this.transform.rotation = Quaternion.Lerp(this.transform.rotation,targetRotation,Time.deltaTime *25);
-			
-			if(controller.isGrounded){
-				movedir = Vector3.zero;
-				movedir = transform.TransformDirection(Vector3.forward*moveSpeed);
-			}
-		}else
-		{
-			
-			movedir = Vector3.Lerp(movedir,Vector3.zero,Time.deltaTime * 10);	
-		
-		}
-		movedir.y -= 20 * Time.deltaTime;
-		controller.Move(movedir * Time.deltaTime);	
-		
 	}	
 	
 	//Look at target method
@@ -625,8 +546,6 @@ public class HeroController : MonoBehaviour {
 	//ResetState Method
 	public void ResetState()
 	{
-		moveSpeed = 0;
-		movedir = Vector3.zero;	
 		destinationDistance = 0;
 		destinationPosition = this.transform.position;
 		target= null;
@@ -638,8 +557,6 @@ public class HeroController : MonoBehaviour {
 	
 	public void ResetBeforeCast()
 	{
-		moveSpeed = 0;
-		movedir = Vector3.zero;	
 		destinationDistance = 0;
 		destinationPosition = this.transform.position;
 		target= null;
@@ -649,8 +566,6 @@ public class HeroController : MonoBehaviour {
 	
 	void ResetMove()
 	{
-		moveSpeed = 0;
-		movedir = Vector3.zero;	
 		destinationDistance = 0;
 		destinationPosition = this.transform.position;
 	}
@@ -665,8 +580,6 @@ public class HeroController : MonoBehaviour {
 		useSkill = false;
 		castid = 0;
 		skillRange = 0;
-		moveSpeed = 0;
-		movedir = Vector3.zero;	
 		destinationDistance = 0;
 		destinationPosition = this.transform.position;
 		target= null;
@@ -679,10 +592,7 @@ public class HeroController : MonoBehaviour {
 		
 		
 	}
-	
-	void OpenDeadWindow()
-	{
-	}
+
 	
 	void resetCheckAttack()
 	{
@@ -778,7 +688,7 @@ public class HeroController : MonoBehaviour {
     }
 
 
-    public void InitTextDamage(Color colorText,string damageGet){
+    private void InitTextDamage(Color colorText,string damageGet){
 		// Init text damage
 		GameObject loadPref = (GameObject)Resources.Load("TextDamage");
 		GameObject go = (GameObject)Instantiate(loadPref, transform.position  + (Vector3.up*1.0f), Quaternion.identity);
@@ -864,8 +774,6 @@ public class HeroController : MonoBehaviour {
         
 		
 		transform.position = DeadSpawnPoint.transform.position;
-		moveSpeed = 0;
-		movedir = Vector3.zero;	
 		destinationDistance = 0;
 		destinationPosition = this.transform.position;
 		target= null;
@@ -877,5 +785,10 @@ public class HeroController : MonoBehaviour {
         PlayerDataMgr.Instance.dispatcher.SendEvent<HeroController>(PlayerDataEvent.PLAYER_HP_CHANGE, this);
     }
 
-
+    public void Attack(short evtId)
+    {
+        Debug.Log("attack");
+        ctrlAnimState = ControlAnimationState.Attack;
+        Overlap.OverlapSphere(this, transform.position, 1, 1<<layerActiveEnemy);
+    }
 }

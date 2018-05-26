@@ -11,7 +11,7 @@ public class HeroControllerEditor : Editor {
 
 		controller.classType = (ClassType)EditorGUILayout.EnumPopup("Class",controller.classType);
 
-        controller.mouseMove = EditorGUILayout.Toggle("使用鼠标移动", controller.mouseMove);
+        //controller.mouseMove = EditorGUILayout.Toggle("使用鼠标移动", controller.mouseMove);
 
 		EditorGUILayout.Space();
 		
@@ -44,7 +44,7 @@ public class HeroControllerEditor : Editor {
 		
 		EditorGUILayout.Space();
 		
-		controller.autoAttack = EditorGUILayout.Toggle("Auto Attack",controller.autoAttack);
+		//controller.autoAttack = EditorGUILayout.Toggle("Auto Attack",controller.autoAttack);
 		
 		EditorGUILayout.Space();
 		

@@ -21,4 +21,5 @@ public class EnemyStatus : MonoBehaviour {
 	
 	public int expGive;
     public int coinGive;
+    public int id;
 }

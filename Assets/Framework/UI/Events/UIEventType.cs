@@ -2,21 +2,18 @@
 
 public static class UIEventType
 {
-    private static short _MaxIndex = 0;
 
-    private static short GetIndex()
-    {
-        return _MaxIndex++;
-    }
+    public static readonly short OPEN_POPUP_UI = 100;
+    public static readonly short ON_CANCEL_REBORN = 200;
 
-    //------------------------------------------------ui----------------------------------------------------------------------------
-    public static readonly short OPEN_POPUP_UI = GetIndex();
-    public static readonly short ON_CANCEL_REBORN = GetIndex();
+    public static readonly short ON_JOYSTICK_MOVE_START = 300;
+    public static readonly short ON_JOYSTICK_MOVE = 301;
+    public static readonly short ON_JOYSTICK_MOVE_END = 302;
 
-    public static readonly short ON_JOYSTICK_MOVE_START = GetIndex();
-    public static readonly short ON_JOYSTICK_MOVE = GetIndex();
-    public static readonly short ON_JOYSTICK_MOVE_END = GetIndex();
+    public static readonly short ON_JOYSTICK_ATTACK = 310;
 
-    public static readonly short ON_CLICK_SHOPITEM = GetIndex();
+    public static readonly short ON_CLICK_SHOPITEM = 350;
+
+    public static readonly short ON_CLICK_TASKITEM = 400;
 
 }
